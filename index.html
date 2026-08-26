@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>VIERNES · Sistema Financiero</title>
+
+  <!-- Ícono normal del sitio -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+
+  <!-- PWA: permite "Añadir a pantalla de inicio" en Android/Chrome -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#030814">
+
+  <!-- iPhone/Safari: para que abra a pantalla completa, sin barra de Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Viernes">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ================= BOOT ================= -->
+  <div class="boot" id="boot">
+    <div class="boot-core">
+      <div class="reactor boot-reactor">
+        <span class="r-ring r1"></span><span class="r-ring r2"></span>
+        <span class="r-ring r3"></span><span class="r-core"></span>
+      </div>
+      <div class="boot-title">VIERNES</div>
+      <div class="boot-sub">SISTEMA DE ASISTENCIA FINANCIERA</div>
+      <div class="boot-log" id="boot-log"></div>
+    </div>
+    <div class="scanline"></div>
+  </div>
+
+  <!-- ================= LOGIN ================= -->
+  <div class="login" id="login" style="display:none;">
+    <div class="login-panel glass">
+      <div class="reactor login-reactor">
+        <span class="r-ring r1"></span><span class="r-ring r2"></span>
+        <span class="r-ring r3"></span><span class="r-core"></span>
+      </div>
+      <h1 class="login-title">VIERNES</h1>
+      <p class="login-sub">Identifíquese para iniciar sesión</p>
+      <div class="field">
+        <label>Identificación</label>
+        <input type="text" id="login-user" placeholder="Nombre del titular" autocomplete="off" value="Jefe">
+      </div>
+      <button class="btn btn-arc" onclick="iniciarSesion()">⟢ Iniciar sesión</button>
+      <p class="login-note">Sus datos quedan guardados en este equipo, señor. No se pierden al cerrar sesión.</p>
+    </div>
+    <div class="scanline"></div>
+  </div>
+
+  <!-- ================= APP ================= -->
+  <div class="app" id="app" style="display:none;">
+    <div class="grid-overlay"></div>
+
+    <!-- HEADER -->
+    <header class="header glass">
+      <div class="brand">
+        <div class="reactor mini">
+          <span class="r-ring r1"></span><span class="r-ring r2"></span><span class="r-core"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">VIERNES</span>
+          <span class="brand-tag" id="brand-tag">sistema en línea</span>
+        </div>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-page="panel" onclick="switchPage('panel')">◈ Panel</button>
+        <button class="tab" data-page="movimientos" onclick="switchPage('movimientos')">▾ Movimientos</button>
+        <button class="tab" data-page="historial" onclick="switchPage('historial')">≣ Historial</button>
+      </nav>
+
+      <div class="header-right">
+        <div class="clock" id="clock">--:--:--</div>
+        <button class="btn btn-cyan" onclick="abrirConfig(false)">⚙ Distribución</button>
+        <button class="btn btn-logout" onclick="cerrarSesion()">⏻ Viernes apagate</button>
+      </div>
+    </header>
+
+    <!-- STATS HUD -->
+    <section class="hud">
+      <div class="hud-card total">
+        <span class="hud-ico">◎</span>
+        <div><b id="hud-total">$0</b><small>Total registrado</small></div>
+      </div>
+      <div class="hud-cats" id="hud-cats"></div>
+      <div class="hud-card spent">
+        <span class="hud-ico">▽</span>
+        <div><b id="hud-spent">$0</b><small>Total gastado</small></div>
+      </div>
+    </section>
+
+    <main class="main">
+
+      <!-- ============ PANEL ============ -->
+      <div class="page active" id="page-panel">
+        <div class="panel-grid">
+
+          <!-- Registro -->
+          <div class="card glass">
+            <div class="card-head">
+              <h2>Registrar dinero</h2>
+              <span class="card-note">Se reparte según su configuración</span>
+            </div>
+            <div class="field">
+              <label>Monto a registrar</label>
+              <div class="money-input">
+                <span>$</span>
+                <input type="text" id="reg-monto" inputmode="numeric" placeholder="0" oninput="fmtMoney(this)">
+              </div>
+            </div>
+            <div class="field">
+              <label>Nota (opcional)</label>
+              <input type="text" id="reg-nota" placeholder="Ej: quincena, venta, regalo…" autocomplete="off">
+            </div>
+            <div class="split-preview" id="split-preview"></div>
+            <button class="btn btn-arc block" onclick="registrarDinero()">⟢ Registrar y repartir</button>
+          </div>
+
+          <!-- Reactor / distribución -->
+          <div class="card glass reactor-card">
+            <div class="card-head">
+              <h2>Distribución activa</h2>
+              <span class="card-note">Fondos disponibles ahora mismo</span>
+            </div>
+            <div class="reactor-wrap">
+              <svg viewBox="0 0 220 220" class="dist-reactor" id="dist-reactor"></svg>
+              <div class="reactor-center">
+                <small>Disponible</small>
+                <b id="reactor-disp">$0</b>
+              </div>
+            </div>
+            <div class="legend" id="legend"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MOVIMIENTOS ============ -->
+      <div class="page" id="page-movimientos">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">▾ Movimientos</h2>
+            <p class="section-sub">Descuente un gasto de la categoría que corresponda.</p>
+          </div>
+        </div>
+        <div class="mv-balances" id="mv-balances"></div>
+        <div class="card glass form-inline">
+          <div class="field">
+            <label>Categoría</label>
+            <select id="mv-categoria"></select>
+          </div>
+          <div class="field grow">
+            <label>Concepto</label>
+            <input type="text" id="mv-concepto" placeholder="Ej: mercado, antojo, retiro de ahorro…" autocomplete="off">
+          </div>
+          <div class="field">
+            <label>Monto</label>
+            <div class="money-input"><span>$</span><input type="text" id="mv-monto" inputmode="numeric" placeholder="0" oninput="fmtMoney(this)"></div>
+          </div>
+          <button class="btn btn-red" onclick="agregarMovimiento()">− Descontar</button>
+        </div>
+        <div class="chips" id="mv-filtros"></div>
+        <div class="table-wrap glass">
+          <table>
+            <thead><tr><th>#</th><th>Categoría</th><th>Concepto</th><th>Monto</th><th>Fecha</th><th></th></tr></thead>
+            <tbody id="mv-body"></tbody>
+          </table>
+          <div class="empty" id="mv-empty"><span>▾</span>Aún no hay movimientos registrados.</div>
+        </div>
+      </div>
+
+      <!-- ============ HISTORIAL ============ -->
+      <div class="page" id="page-historial">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">≣ Historial del módulo</h2>
+            <p class="section-sub">Todo lo que ha pasado en esta sesión, en orden.</p>
+          </div>
+          <button class="btn btn-cyan" onclick="descargarPDF(false)">⤓ Exportar PDF</button>
+        </div>
+        <div class="table-wrap glass">
+          <table>
+            <thead><tr><th>#</th><th>Tipo</th><th>Detalle</th><th>Monto</th><th>Fecha</th></tr></thead>
+            <tbody id="hist-body"></tbody>
+          </table>
+          <div class="empty" id="hist-empty"><span>≣</span>El historial está vacío. Registra algo para empezar.</div>
+        </div>
+      </div>
+
+    </main>
+    <div class="scanline"></div>
+  </div>
+
+  <!-- ============ LOGOUT CONFIRM ============ -->
+  <div class="modal-bg" id="logout-modal">
+    <div class="modal glass">
+      <h3>Seguro que quiere cerrar sesión Señor</h3>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="cerrarModal('logout-modal')">Cancelar</button>
+        <button class="btn btn-red" onclick="confirmarCierre()">Si quiero cerrar sesion</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CONFIGURAR DISTRIBUCIÓN ============ -->
+  <div class="modal-bg" id="config-modal">
+    <div class="modal glass config-modal">
+      <h3 id="config-title">Configure su distribución</h3>
+      <p class="modal-txt" id="config-intro">Dígame en qué categorías repartir cada ingreso, con nombre y porcentaje. Deben sumar exactamente 100%.</p>
+      <div id="config-rows" class="config-rows"></div>
+      <button class="btn btn-ghost" onclick="agregarFilaConfig()">+ Agregar categoría</button>
+      <div class="config-total"><span>Total asignado:</span> <b id="config-total-val">0%</b></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="config-cancel" onclick="cerrarModal('config-modal')">Cancelar</button>
+        <button class="btn btn-arc" id="config-save-btn" onclick="guardarConfigClick()">⟢ Guardar distribución</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="pdf.umd.min.js"></script>
+  <script src="pdf.plugin.autotable.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    /* Puente de voz nativa para Android (WebView).
+       En un navegador normal esto no hace nada y se usa speechSynthesis. */
+    (function(){
+      if (window.AndroidTTS && typeof window.AndroidTTS.speak === 'function') {
+        window.hablar = function(texto){
+          try { window.AndroidTTS.speak(String(texto)); } catch(e){}
+        };
+      }
+    })();
+  </script>
+</body>
+</html>
