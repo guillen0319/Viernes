@@ -130,7 +130,7 @@ input::placeholder{color:rgba(111,146,182,.6);font-weight:500}
   background:transparent;border:1px solid transparent;border-radius:8px;padding:9px 15px;cursor:pointer;transition:.18s}
 .tab:hover{color:var(--ink);background:rgba(79,214,255,.08)}
 .tab.active{color:#00121f;background:linear-gradient(135deg,var(--cyan),var(--blue));box-shadow:var(--glow)}
-.header-right{display:flex;align-items:center;gap:12px}
+.header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
 .clock{font-family:var(--font-m);font-size:14px;color:var(--cyan);letter-spacing:1px;text-shadow:0 0 8px rgba(79,214,255,.4)}
 
 /* ============ HUD STATS ============ */
