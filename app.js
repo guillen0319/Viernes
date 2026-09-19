@@ -31,7 +31,8 @@ function blankData(){
   return { totalReg:0, totalGast:0,
     config:{ categorias:[], listo:false },
     disp:{}, asign:{},
-    ingresos:[], movimientos:[], historial:[] };
+    ingresos:[], movimientos:[], historial:[],
+    resetPass:null };
 }
 let D = blankData();
 
@@ -65,6 +66,7 @@ function load(){
   if(!Array.isArray(D.movimientos)) D.movimientos = [];
   if(!D.disp) D.disp = {};
   if(!D.asign) D.asign = {};
+  if(D.resetPass===undefined) D.resetPass = null;
   migrarSiNecesario();
 }
 function save(){ localStorage.setItem(K.data, JSON.stringify(D)); }
@@ -527,6 +529,53 @@ document.addEventListener('keydown',e=>{
   }
 });
 document.addEventListener('input',e=>{ if(e.target.id==='reg-monto') updateSplitPreview(); });
+
+/* ---------- reiniciar REGISTRO (borra ingresos/gastos/historial, protegido con contraseña) ---------- */
+function abrirReiniciarRegistro(){
+  const nueva = $('reset-form-nueva'), actual = $('reset-form-actual');
+  if(!D.resetPass){
+    $('reset-title').textContent = 'Cree una contraseña para reiniciar';
+    $('reset-txt').textContent = 'Esta contraseña se le pedirá cada vez que quiera reiniciar el registro, para que no pase por accidente. Al guardarla, el reinicio se ejecuta de una vez.';
+    nueva.style.display=''; actual.style.display='none';
+    $('reset-pass1').value=''; $('reset-pass2').value='';
+  } else {
+    $('reset-title').textContent = 'Reiniciar el registro';
+    $('reset-txt').textContent = 'Esto pone en ceros sus ingresos, gastos e historial. Su distribución de categorías se mantiene tal cual está. Ingrese su contraseña para confirmar.';
+    nueva.style.display='none'; actual.style.display='';
+    $('reset-pass-actual').value='';
+  }
+  $('reset-modal').classList.add('show');
+  setTimeout(()=>{ const i=nueva.style.display==='none'?$('reset-pass-actual'):$('reset-pass1'); if(i) i.focus(); },100);
+}
+function confirmarReinicioModal(){
+  if(!D.resetPass){
+    const p1=$('reset-pass1').value, p2=$('reset-pass2').value;
+    if(!p1 || p1.length<4){ toast('La contraseña debe tener mínimo 4 caracteres, señor.',true); return; }
+    if(p1!==p2){ toast('Las contraseñas no coinciden, señor.',true); return; }
+    D.resetPass = p1; save();
+    hablar('Contraseña creada, señor. A partir de ahora se la voy a pedir cada vez que quiera reiniciar el registro.');
+    ejecutarReinicioRegistro();
+  } else {
+    const p = $('reset-pass-actual').value;
+    if(p !== D.resetPass){
+      toast('Contraseña incorrecta, señor. El registro no se modificó.',true);
+      hablar('Contraseña incorrecta, señor. Su registro sigue intacto.');
+      return;
+    }
+    ejecutarReinicioRegistro();
+  }
+}
+function ejecutarReinicioRegistro(){
+  const cats = D.config.categorias || [];
+  D.totalReg = 0; D.totalGast = 0;
+  D.disp = {}; D.asign = {};
+  cats.forEach(c=>{ D.disp[c.id]=0; D.asign[c.id]=0; });
+  D.ingresos = []; D.movimientos = []; D.historial = [];
+  save(); renderAll();
+  cerrarModal('reset-modal');
+  toast('Registro reiniciado, señor. Todo en ceros.');
+  hablar('Registro reiniciado, señor. Ingresos, gastos e historial quedaron en ceros. Su distribución se mantiene igual.');
+}
 
 /* ---------- reiniciar sistema (fuerza traer la última versión guardada online) ---------- */
 async function reiniciarSistema(){

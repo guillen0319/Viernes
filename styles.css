@@ -116,6 +116,11 @@ input::placeholder{color:rgba(111,146,182,.6);font-weight:500}
 
 /* ============ APP SHELL ============ */
 .app{position:relative;min-height:100vh;padding:14px}
+
+.app-footer{display:flex;justify-content:center;padding:18px 0 6px}
+.btn-danger-ghost{background:transparent;border:1px solid rgba(255,80,105,.25);color:rgba(255,169,180,.65);font-size:12.5px;padding:8px 16px}
+.btn-danger-ghost:hover{border-color:var(--red);color:#ffb3bf;background:rgba(255,80,105,.1)}
+.modal-hint{color:var(--muted);font-size:12.5px;line-height:1.5;margin-top:-8px;margin-bottom:16px;opacity:.75}
 .grid-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:linear-gradient(rgba(79,214,255,.05) 1px,transparent 1px) 0 0/48px 48px,
             linear-gradient(90deg,rgba(79,214,255,.05) 1px,transparent 1px) 0 0/48px 48px;

@@ -199,6 +199,9 @@
       </div>
 
     </main>
+    <footer class="app-footer">
+      <button class="btn btn-danger-ghost" onclick="abrirReiniciarRegistro()">🗑 Reiniciar registro</button>
+    </footer>
     <div class="scanline"></div>
   </div>
 
@@ -224,6 +227,38 @@
       <div class="modal-actions">
         <button class="btn btn-ghost" id="config-cancel" onclick="cerrarModal('config-modal')">Cancelar</button>
         <button class="btn btn-arc" id="config-save-btn" onclick="guardarConfigClick()">⟢ Guardar distribución</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ REINICIAR REGISTRO (con contraseña) ============ -->
+  <div class="modal-bg" id="reset-modal">
+    <div class="modal glass">
+      <h3 id="reset-title">Reiniciar el registro</h3>
+      <p class="modal-txt" id="reset-txt">Esto pone en ceros sus ingresos, gastos e historial. Su distribución de categorías se mantiene.</p>
+
+      <div id="reset-form-nueva">
+        <div class="field">
+          <label>Cree una contraseña</label>
+          <input type="password" id="reset-pass1" placeholder="Mínimo 4 caracteres" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label>Repítala</label>
+          <input type="password" id="reset-pass2" placeholder="Repita la contraseña" autocomplete="new-password">
+        </div>
+      </div>
+
+      <div id="reset-form-actual">
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" id="reset-pass-actual" placeholder="Ingrese su contraseña" autocomplete="current-password">
+        </div>
+        <p class="modal-hint">¿La olvidó? No hay forma de recuperarla: solo puede borrar los datos del navegador para empezar de cero (eso también la elimina a ella).</p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="cerrarModal('reset-modal')">Cancelar</button>
+        <button class="btn btn-red" onclick="confirmarReinicioModal()">⚠ Reiniciar registro</button>
       </div>
     </div>
   </div>
