@@ -528,5 +528,32 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('input',e=>{ if(e.target.id==='reg-monto') updateSplitPreview(); });
 
+/* ---------- reiniciar sistema (fuerza traer la última versión guardada online) ---------- */
+async function reiniciarSistema(){
+  if(!navigator.onLine){
+    toast('Necesita conexión a internet para reiniciar el sistema, señor.',true);
+    hablar('Necesito conexión a internet para reiniciar el sistema, señor.');
+    return;
+  }
+  toast('Reiniciando el núcleo, señor…');
+  hablar('Reiniciando el núcleo del sistema, señor. Un momento.');
+  try{
+    if('serviceWorker' in navigator){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for(const r of regs) await r.unregister();
+    }
+    if('caches' in window){
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+  }catch(e){ /* si algo falla igual recargamos */ }
+  setTimeout(()=>{ location.reload(); }, 900);
+}
+
 /* ---------- go ---------- */
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
 runBoot();

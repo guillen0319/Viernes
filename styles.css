@@ -112,6 +112,7 @@ input::placeholder{color:rgba(111,146,182,.6);font-weight:500}
 .btn-ghost{background:transparent;border-color:var(--line-s);color:var(--muted)}
 .btn-logout{background:transparent;border-color:rgba(255,80,105,.4);color:#ffa9b4;font-size:13px;padding:9px 14px}
 .btn-logout:hover{background:rgba(255,80,105,.14)}
+.ico-power{vertical-align:-2px;margin-right:2px}
 
 /* ============ APP SHELL ============ */
 .app{position:relative;min-height:100vh;padding:14px}
